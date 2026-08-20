@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>demo/repoguardian-showcase · Issues</title>
+  <title>repoguardian-showcase · GitHub Issues Simulation</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
@@ -13,19 +13,21 @@
 </head>
 <body class="bg-[#0d1117] text-[#c9d1d9] min-h-screen flex flex-col">
 
-  <!-- GitHub Top Navigation Bar -->
-  <header class="bg-[#161b22] border-b border-[#30363d] px-6 py-3 flex items-center justify-between text-sm">
+  <!-- GitHub Top Bar -->
+  <header class="bg-[#161b22] border-b border-[#30363d] px-6 py-3 flex items-center justify-between text-sm sticky top-0 z-40">
     <div class="flex items-center gap-3">
       <svg class="w-8 h-8 fill-white" viewBox="0 0 16 16"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path></svg>
-      <span class="font-semibold text-white">demo</span>
-      <span class="text-[#8b949e]">/</span>
-      <span class="font-semibold text-white">repoguardian-showcase</span>
-      <span class="bg-[#21262d] text-[#8b949e] text-xs px-2 py-0.5 rounded-full border border-[#30363d] ml-1">Public</span>
+      <div class="flex items-center gap-1.5 text-sm font-medium">
+        <span class="text-[#8b949e]">demo</span>
+        <span class="text-[#8b949e]">/</span>
+        <span class="text-white font-semibold">repoguardian-showcase</span>
+        <span class="bg-[#21262d] text-[#8b949e] text-xs px-2 py-0.5 rounded-full border border-[#30363d] ml-1">Public</span>
+      </div>
     </div>
     <div class="flex items-center gap-2">
-      <span class="inline-flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full font-mono">
+      <span class="inline-flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full font-mono">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        RepoGuardian Active
+        RepoGuardian AI Daemon Online
       </span>
     </div>
   </header>
@@ -33,39 +35,44 @@
   <!-- Main Container -->
   <main class="max-w-6xl w-full mx-auto p-6 flex-1 flex flex-col gap-6">
 
-    <!-- Demo Action Bar / Issue Generator -->
-    <div class="bg-[#161b22] border border-[#30363d] rounded-xl p-4 shadow-lg">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <!-- Action Toolbar: One-Click Generators -->
+    <div class="bg-[#161b22] border border-[#30363d] rounded-xl p-5 shadow-lg">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h2 class="text-sm font-semibold text-white uppercase tracking-wider flex items-center gap-2">
-            <span>⚡ Interactive Event Generator</span>
+          <h2 class="text-xs font-semibold text-white uppercase tracking-wider flex items-center gap-2">
+            <span>⚡ Instant Issue Generator</span>
+            <span class="text-[10px] text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded font-mono">NO CONFIG REQUIRED</span>
           </h2>
-          <p class="text-xs text-[#8b949e] mt-0.5">Click an event to dispatch a realistic issue into the repository and trigger signal detection.</p>
+          <p class="text-xs text-[#8b949e] mt-1">Click any button to randomly generate and push a new issue into the repository with automated signal triage.</p>
         </div>
+
         <div class="flex flex-wrap gap-2">
-          <button onclick="injectEvent('duplicate')" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] hover:border-[#8b949e] text-white text-xs font-medium px-3 py-2 rounded-lg transition-all active:scale-95 flex items-center gap-1.5">
-            <span>👯</span> New Duplicate Issue
+          <button onclick="generateRandom('any')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium px-3.5 py-2.5 rounded-lg transition-all shadow-md active:scale-95 flex items-center gap-1.5">
+            <span>🎲</span> Random Issue
           </button>
-          <button onclick="injectEvent('regression')" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] hover:border-[#8b949e] text-white text-xs font-medium px-3 py-2 rounded-lg transition-all active:scale-95 flex items-center gap-1.5">
-            <span>🔁</span> Trigger Regression
+          <button onclick="generateRandom('duplicate')" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-amber-300 text-xs font-medium px-3 py-2.5 rounded-lg transition-all active:scale-95 flex items-center gap-1.5">
+            <span>👯</span> Duplicate Bug
           </button>
-          <button onclick="injectEvent('security')" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] hover:border-[#8b949e] text-rose-300 hover:text-white text-xs font-medium px-3 py-2 rounded-lg transition-all active:scale-95 flex items-center gap-1.5">
-            <span>🚨</span> Report CVE / Security
+          <button onclick="generateRandom('regression')" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-purple-300 text-xs font-medium px-3 py-2.5 rounded-lg transition-all active:scale-95 flex items-center gap-1.5">
+            <span>🔁</span> Regression Bug
           </button>
-          <button onclick="injectEvent('missing_info')" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] hover:border-[#8b949e] text-amber-300 hover:text-white text-xs font-medium px-3 py-2 rounded-lg transition-all active:scale-95 flex items-center gap-1.5">
-            <span>❓</span> Vague Bug (No Info)
+          <button onclick="generateRandom('security')" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-rose-300 text-xs font-medium px-3 py-2.5 rounded-lg transition-all active:scale-95 flex items-center gap-1.5">
+            <span>🚨</span> CVE / Security
           </button>
-          <button onclick="injectEvent('clean')" class="bg-[#238636] hover:bg-[#2ea043] text-white text-xs font-medium px-3 py-2 rounded-lg transition-all active:scale-95 flex items-center gap-1.5">
-            <span>+</span> Standard Issue
+          <button onclick="generateRandom('contentious')" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-orange-300 text-xs font-medium px-3 py-2.5 rounded-lg transition-all active:scale-95 flex items-center gap-1.5">
+            <span>🔥</span> Contentious Debate
+          </button>
+          <button onclick="generateRandom('missing_info')" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] text-yellow-300 text-xs font-medium px-3 py-2.5 rounded-lg transition-all active:scale-95 flex items-center gap-1.5">
+            <span>❓</span> Missing Repro
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Repository Content Box -->
+    <!-- Repository Box -->
     <div class="bg-[#161b22] border border-[#30363d] rounded-xl overflow-hidden shadow-sm">
       
-      <!-- Issue Filter & Stats Header -->
+      <!-- Filter Bar -->
       <div class="bg-[#161b22] border-b border-[#30363d] p-4 flex flex-wrap items-center justify-between gap-3 text-xs">
         <div class="flex items-center gap-4 font-medium">
           <button onclick="filterState('open')" id="tab-open" class="text-white flex items-center gap-1.5 font-semibold">
@@ -78,10 +85,13 @@
           </button>
         </div>
 
-        <div class="flex items-center gap-2">
-          <span class="text-[#8b949e]">Filter:</span>
-          <select id="signal-filter" onchange="renderIssues()" class="bg-[#0d1117] border border-[#30363d] text-[#c9d1d9] rounded px-2 py-1 focus:outline-none">
-            <option value="all">All Signals</option>
+        <div class="flex items-center gap-3">
+          <span id="activity-ticker" class="text-xs text-emerald-400 font-mono hidden items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+            New issue evaluated
+          </span>
+          <select id="signal-filter" onchange="renderIssues()" class="bg-[#0d1117] border border-[#30363d] text-[#c9d1d9] rounded-lg px-2.5 py-1.5 text-xs focus:outline-none">
+            <option value="all">All RepoGuardian Signals</option>
             <option value="duplicate">Likely Duplicates</option>
             <option value="regression">Possible Regressions</option>
             <option value="security">Security Sensitive</option>
@@ -93,29 +103,36 @@
       </div>
 
       <!-- Issues List -->
-      <div id="issues-container" class="divide-y divide-[#30363d]">
-        <!-- Rendered via JS -->
-      </div>
+      <div id="issues-container" class="divide-y divide-[#30363d]"></div>
     </div>
   </main>
 
-  <!-- Slide-over Drawer / Modal for Issue Details -->
-  <div id="modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+  <!-- Issue View Modal -->
+  <div id="modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
       <div class="p-4 border-b border-[#30363d] flex items-center justify-between">
         <div class="flex items-center gap-2">
           <span id="modal-status-badge"></span>
           <span id="modal-title" class="font-semibold text-white text-base"></span>
-          <span id="modal-number" class="text-[#8b949e] font-mono"></span>
+          <span id="modal-number" class="text-[#8b949e] font-mono text-sm"></span>
         </div>
-        <button onclick="closeModal()" class="text-[#8b949e] hover:text-white p-1">✕</button>
+        <button onclick="closeModal()" class="text-[#8b949e] hover:text-white p-1 text-lg">✕</button>
       </div>
 
       <div class="p-6 overflow-y-auto space-y-4 text-sm">
+        <!-- AI Triage Banner in Modal -->
+        <div id="modal-ai-box" class="bg-slate-900 border border-indigo-500/30 rounded-lg p-3 text-xs flex items-start gap-2.5">
+          <span class="text-indigo-400 text-base">🤖</span>
+          <div>
+            <div class="font-semibold text-indigo-300">RepoGuardian Triage Verdict</div>
+            <div id="modal-ai-text" class="text-slate-300 mt-0.5"></div>
+          </div>
+        </div>
+
         <div class="bg-[#0d1117] border border-[#30363d] rounded-lg p-4 font-mono text-xs whitespace-pre-wrap leading-relaxed" id="modal-body"></div>
 
         <div class="border-t border-[#30363d] pt-4">
-          <h4 class="text-xs font-semibold text-[#8b949e] uppercase mb-3">Conversation & Maintainer Context</h4>
+          <h4 class="text-xs font-semibold text-[#8b949e] uppercase mb-3">Comments & Thread</h4>
           <div id="modal-comments" class="space-y-3"></div>
         </div>
       </div>
@@ -123,17 +140,23 @@
   </div>
 
   <script>
-    // Initial seeded dataset representing RepoGuardian demo requirements
+    let issueCounter = 115;
+    let activeFilter = 'open';
+
+    const USERNAMES = ["soren-k", "m-takahashi", "elena-v", "d-miller91", "j-chen-dev", "sec-auditor-zoe", "nikolay-rust", "marcus-k", "artem-g", "monika-telemetry"];
+
+    // Initial Base Dataset
     let issues = [
       {
         id: 101,
-        title: "Session expires unexpectedly during long-running worker runs",
+        title: "Session expires unexpectedly during long-running daemon worker runs",
         body: "We have background sync tasks running via the CLI with `--daemon`.\nAfter exactly 1 hour, every request fails with HTTP 401 Unauthorized. The client is not requesting a new JWT with REFRESH_TOKEN.",
         author: "soren-k",
         state: "open",
         created_at: "14 days ago",
         labels: ["bug", "auth"],
         signal: "duplicate",
+        aiReason: "88% similarity cluster with #102. Recommendation: Mark as duplicate and link discussion.",
         comments: [
           { author: "alex-maintainer", body: "Looking into the refresh interceptor in src/client/http.ts.", is_maintainer: true }
         ]
@@ -147,6 +170,7 @@
         created_at: "11 days ago",
         labels: ["bug", "cli"],
         signal: "duplicate",
+        aiReason: "Duplicate candidate for #101. Token refresh exchange fails on long-lived connections.",
         comments: [
           { author: "alex-maintainer", body: "Likely duplicate of #101 — token manager drops the bearer header on retry.", is_maintainer: true }
         ]
@@ -160,19 +184,21 @@
         created_at: "75 days ago",
         labels: ["bug", "windows"],
         signal: "regression",
+        aiReason: "Historical baseline: resolved via v2.3.1.",
         comments: [
           { author: "alex-maintainer", body: "Fixed in v2.3.1. We now normalize all paths to forward slashes.", is_maintainer: true }
         ]
       },
       {
         id: 104,
-        title: "Ignore patterns fail on Windows due to backslash path separators",
+        title: "Ignore patterns fail on Windows due to backslash path separators (resurfaced)",
         body: "On Windows 11, patterns in `.guardianignore` like `src/generated/**` do not match because resolver returns backslashes. Re-appeared in v2.4.0.",
         author: "artem-g",
         state: "open",
         created_at: "4 days ago",
         labels: ["bug", "windows"],
         signal: "regression",
+        aiReason: "Regression detected: 92% semantic similarity to closed issue #103. Flagged for hotfix priority.",
         comments: []
       },
       {
@@ -184,6 +210,7 @@
         created_at: "7 days ago",
         labels: ["security", "vulnerability"],
         signal: "security",
+        aiReason: "High-priority security keyword detected ('path traversal'). Escalated directly to maintainers.",
         comments: [
           { author: "alex-maintainer", body: "Escalated. Patching storage root boundary verification.", is_maintainer: true }
         ]
@@ -197,6 +224,7 @@
         created_at: "15 days ago",
         labels: ["discussion", "breaking-change"],
         signal: "contentious",
+        aiReason: "Contentious thread: 4 participants, pushback detected ('wontfix', 'breaking change').",
         comments: [
           { author: "enterprise-dan", body: "Please don't. This will break CI for thousands of teams.", is_maintainer: false },
           { author: "sarah-maintainer", body: "I disagree with doing this in a minor version. This is a breaking change.", is_maintainer: true },
@@ -213,100 +241,130 @@
         created_at: "8 days ago",
         labels: ["bug", "typescript"],
         signal: "urgent",
+        aiReason: "Unresponded issue created >7 days ago with 0 comments. Maintainer SLA breached.",
         comments: []
       },
       {
         id: 108,
         title: "it crashes with error",
-        body="I ran the command and it gave error and broke. Please fix.",
+        body: "I ran the command and it gave error and broke. Please fix.",
         author: "dan-b-22",
         state: "open",
         created_at: "4 days ago",
         labels: ["bug"],
         signal: "missing_info",
+        aiReason: "Missing repro info: Contains error mention without steps, environment, or logs.",
         comments: []
-      },
-      {
-        id: 109,
-        title: "Add syntax highlighting for Rust snippets in HTML reports",
-        body: "Feature request to bundle highlight.js Rust language pack for report previews.",
-        author: "nikolay-rust",
-        state: "open",
-        created_at: "4 days ago",
-        labels: ["enhancement"],
-        signal: "clean",
-        comments: [
-          { author: "sarah-maintainer", body: "PRs welcome!", is_maintainer: true }
-        ]
       }
     ];
 
-    let activeFilter = 'open';
-    let nextId = 110;
-
-    // Generators for dynamic injection on button clicks
-    const generators = {
-      duplicate: () => ({
-        id: nextId++,
-        title: "OAuth bearer token not refreshed automatically on expiry",
-        body: "When running in CI pipelines, requests fail after initial token lifetime expires. The client needs to intercept 401 and invoke the refresh token grant.",
-        author: "elena-v",
-        state: "open",
-        created_at: "Just now",
-        labels: ["auth"],
-        signal: "duplicate",
-        comments: []
-      }),
-      regression: () => ({
-        id: nextId++,
-        title: "`--port` argument is ignored when starting daemon via `repoguardian serve`",
-        body: "Passing `--port 8080` still binds to default port 3000 in the latest release.",
-        author: "brian-w",
-        state: "open",
-        created_at: "Just now",
-        labels: ["bug", "cli"],
-        signal: "regression",
-        comments: []
-      }),
-      security: () => ({
-        id: nextId++,
-        title: "SQL injection risk in custom database query evaluator",
-        body: "In `src/rules/dbCheck.ts`, user queries are concatenated without parameterized variable bindings.",
-        author: "alif-security",
-        state: "open",
-        created_at: "Just now",
-        labels: ["security"],
-        signal: "security",
-        comments: []
-      }),
-      missing_info: () => ({
-        id: nextId++,
-        title: "plugin broken on scan",
-        body: "Crash exception thrown when running analysis. Please fix this bug.",
-        author: "user-rush-99",
-        state: "open",
-        created_at: "Just now",
-        labels: ["bug"],
-        signal: "missing_info",
-        comments: []
-      }),
-      clean: () => ({
-        id: nextId++,
-        title: "Support `.env.local` file overrides for local tests",
-        body: "### Feature Request\nAllow `repoguardian test` to automatically pick up `.env.local` if present.",
-        author: "liam-connor",
-        state: "open",
-        created_at: "Just now",
-        labels: ["enhancement"],
-        signal: "clean",
-        comments: []
-      })
+    // Randomized Generation Bank
+    const TEMPLATES = {
+      duplicate: [
+        {
+          title: "OAuth bearer token not refreshed automatically in background worker",
+          body: "When running the CLI in long background sessions, HTTP requests fail with 401 Unauthorized after the initial access token expires.\n\nExpected behavior: auto-invoke refresh token.",
+          labels: ["auth", "bug"],
+          aiReason: "91% similarity with #101 (Token Refresh Failure). Marked as likely duplicate."
+        },
+        {
+          title: "YAML parser ignores strict_mode: false boolean flag",
+          body: "Config file with `strict_mode: false` still fails the build on warnings. The string `\"false\"` evaluates to truthy.",
+          labels: ["config", "bug"],
+          aiReason: "Duplicate detected: matches config parsing issues cluster."
+        }
+      ],
+      regression: [
+        {
+          title: "`--port` argument is ignored when starting daemon via `repoguardian serve`",
+          body: "Passing `--port 8080` still binds to default port 3000. This was fixed previously in v2.2.0 but has broken again.",
+          labels: ["bug", "cli"],
+          aiReason: "Regression detected: 89% semantic overlap with previously closed issue #74."
+        },
+        {
+          title: "Malformed JSON output with trailing comma when `--format=json` has no violations",
+          body: "Running audit on a clean repo outputs invalid JSON with a trailing comma in results array, breaking `jq` parsers.",
+          labels: ["bug", "formatter"],
+          aiReason: "Regression alert: JSON serializer bug resurfaced from v2.3.4."
+        }
+      ],
+      security: [
+        {
+          title: "SQL injection risk in custom database query evaluator",
+          body: "In `src/rules/dbCheck.ts`, user queries are concatenated without parameterized variable bindings (`$1, $2`). An attacker can inject arbitrary SQL fragments.",
+          labels: ["security"],
+          aiReason: "Critical security keyword ('SQL injection') detected. Escalation route triggered."
+        },
+        {
+          title: "Credential leak in CLI debug logs when running with `--verbose`",
+          body: "When running `repoguardian sync --verbose`, the authorization header `Bearer ghp_xxxx` is printed in plaintext to stdout in CI logs.",
+          labels: ["security", "cli"],
+          aiReason: "High severity: credential leak in stdout/CI detected."
+        }
+      ],
+      contentious: [
+        {
+          title: "Auto-commit and push fixes directly to PR branches during CI runs",
+          body: "When formatting issues are detected, the tool should automatically commit and push fixes directly to the contributor's PR branch.",
+          labels: ["feature-request", "discussion"],
+          aiReason: "Contentious topic detected: Maintainer concerns regarding CI runner write permissions.",
+          comments: [
+            { author: "security-steve", body: "Giving CI runners write access to push commits back to contributor branches is a major security risk.", is_maintainer: false },
+            { author: "alex-maintainer", body: "Out of scope for core engine. Not planned.", is_maintainer: true }
+          ]
+        }
+      ],
+      missing_info: [
+        {
+          title: "cli broken after update",
+          body: "Updated today and now nothing works. Getting bug error on terminal.",
+          labels: ["bug"],
+          aiReason: "Missing context: No OS details, versions, or error trace provided."
+        },
+        {
+          title: "scan failed",
+          body: "Tried scanning my repository and it threw unexpected crash exception.",
+          labels: ["bug"],
+          aiReason: "Missing info: Missing reproduction steps and CLI arguments."
+        }
+      ]
     };
 
-    function injectEvent(type) {
-      const newIssue = generators[type]();
+    function generateRandom(category) {
+      let chosenType = category;
+      if (category === 'any') {
+        const types = ['duplicate', 'regression', 'security', 'contentious', 'missing_info'];
+        chosenType = types[Math.floor(Math.random() * types.length)];
+      }
+
+      const list = TEMPLATES[chosenType];
+      const item = list[Math.floor(Math.random() * list.length)];
+      const randomAuthor = USERNAMES[Math.floor(Math.random() * USERNAMES.length)];
+
+      const newIssue = {
+        id: issueCounter++,
+        title: item.title,
+        body: item.body,
+        author: randomAuthor,
+        state: "open",
+        created_at: "Just now",
+        labels: item.labels,
+        signal: chosenType,
+        aiReason: item.aiReason,
+        comments: item.comments || []
+      };
+
       issues.unshift(newIssue);
       renderIssues();
+
+      // Activity ping indicator
+      const ticker = document.getElementById('activity-ticker');
+      ticker.classList.remove('hidden');
+      ticker.classList.add('inline-flex');
+      setTimeout(() => {
+        ticker.classList.add('hidden');
+        ticker.classList.remove('inline-flex');
+      }, 2500);
     }
 
     function filterState(state) {
@@ -331,7 +389,7 @@
       }
 
       if (filtered.length === 0) {
-        container.innerHTML = `<div class="p-8 text-center text-[#8b949e] text-sm">No issues matching the current filter.</div>`;
+        container.innerHTML = `<div class="p-8 text-center text-[#8b949e] text-xs">No issues found matching the selected filter.</div>`;
         return;
       }
 
@@ -362,12 +420,12 @@
 
     function getSignalBadge(signal) {
       const map = {
-        duplicate: '<span class="bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[10px] px-1.5 py-0.5 rounded">Likely Duplicate (0.81)</span>',
+        duplicate: '<span class="bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[10px] px-1.5 py-0.5 rounded">Likely Duplicate</span>',
         regression: '<span class="bg-purple-500/10 text-purple-300 border border-purple-500/30 text-[10px] px-1.5 py-0.5 rounded">Possible Regression</span>',
-        security: '<span class="bg-rose-500/10 text-rose-300 border border-rose-500/30 text-[10px] px-1.5 py-0.5 rounded">Security Sensitive</span>',
-        contentious: '<span class="bg-orange-500/10 text-orange-300 border border-orange-500/30 text-[10px] px-1.5 py-0.5 rounded">Contentious (Wontfix)</span>',
+        security: '<span class="bg-rose-500/10 text-rose-300 border border-rose-500/30 text-[10px] px-1.5 py-0.5 rounded">Security Alert</span>',
+        contentious: '<span class="bg-orange-500/10 text-orange-300 border border-orange-500/30 text-[10px] px-1.5 py-0.5 rounded">Contentious</span>',
         urgent: '<span class="bg-red-500/10 text-red-300 border border-red-500/30 text-[10px] px-1.5 py-0.5 rounded">Unresponded</span>',
-        missing_info: '<span class="bg-yellow-500/10 text-yellow-300 border border-yellow-500/30 text-[10px] px-1.5 py-0.5 rounded">Missing Repro Info</span>',
+        missing_info: '<span class="bg-yellow-500/10 text-yellow-300 border border-yellow-500/30 text-[10px] px-1.5 py-0.5 rounded">Missing Repro</span>',
         clean: ''
       };
       return map[signal] || '';
@@ -380,6 +438,7 @@
       document.getElementById('modal-title').innerText = issue.title;
       document.getElementById('modal-number').innerText = `#${issue.id}`;
       document.getElementById('modal-body').innerText = issue.body;
+      document.getElementById('modal-ai-text').innerText = issue.aiReason || "Standard issue. No immediate escalation needed.";
       document.getElementById('modal-status-badge').innerHTML = issue.state === 'open' 
         ? '<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs px-2 py-0.5 rounded-full font-medium">Open</span>'
         : '<span class="bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs px-2 py-0.5 rounded-full font-medium">Closed</span>';
@@ -407,7 +466,6 @@
       document.getElementById('modal').classList.remove('flex');
     }
 
-    // Initial render
     renderIssues();
   </script>
 </body>
