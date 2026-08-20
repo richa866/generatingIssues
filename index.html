@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>demo/repoguardian-showcase · Issues</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    pre, code, .font-mono { font-family: 'Fira Code', monospace; }
+  </style>
+</head>
+<body class="bg-[#0d1117] text-[#c9d1d9] min-h-screen flex flex-col">
+
+  <!-- GitHub Top Navigation Bar -->
+  <header class="bg-[#161b22] border-b border-[#30363d] px-6 py-3 flex items-center justify-between text-sm">
+    <div class="flex items-center gap-3">
+      <svg class="w-8 h-8 fill-white" viewBox="0 0 16 16"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path></svg>
+      <span class="font-semibold text-white">demo</span>
+      <span class="text-[#8b949e]">/</span>
+      <span class="font-semibold text-white">repoguardian-showcase</span>
+      <span class="bg-[#21262d] text-[#8b949e] text-xs px-2 py-0.5 rounded-full border border-[#30363d] ml-1">Public</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="inline-flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full font-mono">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        RepoGuardian Active
+      </span>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-6xl w-full mx-auto p-6 flex-1 flex flex-col gap-6">
+
+    <!-- Demo Action Bar / Issue Generator -->
+    <div class="bg-[#161b22] border border-[#30363d] rounded-xl p-4 shadow-lg">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-sm font-semibold text-white uppercase tracking-wider flex items-center gap-2">
+            <span>⚡ Interactive Event Generator</span>
+          </h2>
+          <p class="text-xs text-[#8b949e] mt-0.5">Click an event to dispatch a realistic issue into the repository and trigger signal detection.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="injectEvent('duplicate')" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] hover:border-[#8b949e] text-white text-xs font-medium px-3 py-2 rounded-lg transition-all active:scale-95 flex items-center gap-1.5">
+            <span>👯</span> New Duplicate Issue
+          </button>
+          <button onclick="injectEvent('regression')" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] hover:border-[#8b949e] text-white text-xs font-medium px-3 py-2 rounded-lg transition-all active:scale-95 flex items-center gap-1.5">
+            <span>🔁</span> Trigger Regression
+          </button>
+          <button onclick="injectEvent('security')" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] hover:border-[#8b949e] text-rose-300 hover:text-white text-xs font-medium px-3 py-2 rounded-lg transition-all active:scale-95 flex items-center gap-1.5">
+            <span>🚨</span> Report CVE / Security
+          </button>
+          <button onclick="injectEvent('missing_info')" class="bg-[#21262d] hover:bg-[#30363d] border border-[#30363d] hover:border-[#8b949e] text-amber-300 hover:text-white text-xs font-medium px-3 py-2 rounded-lg transition-all active:scale-95 flex items-center gap-1.5">
+            <span>❓</span> Vague Bug (No Info)
+          </button>
+          <button onclick="injectEvent('clean')" class="bg-[#238636] hover:bg-[#2ea043] text-white text-xs font-medium px-3 py-2 rounded-lg transition-all active:scale-95 flex items-center gap-1.5">
+            <span>+</span> Standard Issue
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Repository Content Box -->
+    <div class="bg-[#161b22] border border-[#30363d] rounded-xl overflow-hidden shadow-sm">
+      
+      <!-- Issue Filter & Stats Header -->
+      <div class="bg-[#161b22] border-b border-[#30363d] p-4 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-4 font-medium">
+          <button onclick="filterState('open')" id="tab-open" class="text-white flex items-center gap-1.5 font-semibold">
+            <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 16 16" fill="currentColor"><path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0ZM1.5 8a6.5 6.5 0 1 1 13 0 6.5 6.5 0 0 1-13 0Z"></path></svg>
+            <span id="count-open">0 Open</span>
+          </button>
+          <button onclick="filterState('closed')" id="tab-closed" class="text-[#8b949e] hover:text-white flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-[#8957e5]" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path></svg>
+            <span id="count-closed">0 Closed</span>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span class="text-[#8b949e]">Filter:</span>
+          <select id="signal-filter" onchange="renderIssues()" class="bg-[#0d1117] border border-[#30363d] text-[#c9d1d9] rounded px-2 py-1 focus:outline-none">
+            <option value="all">All Signals</option>
+            <option value="duplicate">Likely Duplicates</option>
+            <option value="regression">Possible Regressions</option>
+            <option value="security">Security Sensitive</option>
+            <option value="contentious">Contentious</option>
+            <option value="urgent">Unresponded / Urgent</option>
+            <option value="missing_info">Missing Info</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Issues List -->
+      <div id="issues-container" class="divide-y divide-[#30363d]">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Slide-over Drawer / Modal for Issue Details -->
+  <div id="modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-[#161b22] border border-[#30363d] rounded-xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      <div class="p-4 border-b border-[#30363d] flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span id="modal-status-badge"></span>
+          <span id="modal-title" class="font-semibold text-white text-base"></span>
+          <span id="modal-number" class="text-[#8b949e] font-mono"></span>
+        </div>
+        <button onclick="closeModal()" class="text-[#8b949e] hover:text-white p-1">✕</button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-4 text-sm">
+        <div class="bg-[#0d1117] border border-[#30363d] rounded-lg p-4 font-mono text-xs whitespace-pre-wrap leading-relaxed" id="modal-body"></div>
+
+        <div class="border-t border-[#30363d] pt-4">
+          <h4 class="text-xs font-semibold text-[#8b949e] uppercase mb-3">Conversation & Maintainer Context</h4>
+          <div id="modal-comments" class="space-y-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initial seeded dataset representing RepoGuardian demo requirements
+    let issues = [
+      {
+        id: 101,
+        title: "Session expires unexpectedly during long-running worker runs",
+        body: "We have background sync tasks running via the CLI with `--daemon`.\nAfter exactly 1 hour, every request fails with HTTP 401 Unauthorized. The client is not requesting a new JWT with REFRESH_TOKEN.",
+        author: "soren-k",
+        state: "open",
+        created_at: "14 days ago",
+        labels: ["bug", "auth"],
+        signal: "duplicate",
+        comments: [
+          { author: "alex-maintainer", body: "Looking into the refresh interceptor in src/client/http.ts.", is_maintainer: true }
+        ]
+      },
+      {
+        id: 102,
+        title: "CLI daemon gets stuck in 401 loop after 60 minutes",
+        body: "Steps to reproduce:\n1. repoguardian start --watch\n2. Wait 60 mins\n3. Logs fill with 401 Bad credentials.",
+        author: "m-takahashi",
+        state: "open",
+        created_at: "11 days ago",
+        labels: ["bug", "cli"],
+        signal: "duplicate",
+        comments: [
+          { author: "alex-maintainer", body: "Likely duplicate of #101 — token manager drops the bearer header on retry.", is_maintainer: true }
+        ]
+      },
+      {
+        id: 103,
+        title: "Ignore patterns fail on Windows due to backslash path separators",
+        body: "On Windows 11, patterns in `.guardianignore` like `src/generated/**` do not match because resolver returns backslashes.",
+        author: "kevin-m-win",
+        state: "closed",
+        created_at: "75 days ago",
+        labels: ["bug", "windows"],
+        signal: "regression",
+        comments: [
+          { author: "alex-maintainer", body: "Fixed in v2.3.1. We now normalize all paths to forward slashes.", is_maintainer: true }
+        ]
+      },
+      {
+        id: 104,
+        title: "Ignore patterns fail on Windows due to backslash path separators",
+        body: "On Windows 11, patterns in `.guardianignore` like `src/generated/**` do not match because resolver returns backslashes. Re-appeared in v2.4.0.",
+        author: "artem-g",
+        state: "open",
+        created_at: "4 days ago",
+        labels: ["bug", "windows"],
+        signal: "regression",
+        comments: []
+      },
+      {
+        id: 105,
+        title: "Potential path traversal vulnerability in report export endpoint",
+        body: "Endpoint `GET /api/reports/download?file=../../../../etc/passwd` allows reading arbitrary files outside storage root.",
+        author: "sec-auditor-zoe",
+        state: "open",
+        created_at: "7 days ago",
+        labels: ["security", "vulnerability"],
+        signal: "security",
+        comments: [
+          { author: "alex-maintainer", body: "Escalated. Patching storage root boundary verification.", is_maintainer: true }
+        ]
+      },
+      {
+        id: 106,
+        title: "Drop CommonJS (CJS) support and ship pure ESM only",
+        body: "Node 16 and 18 are EOL. Set type: module and remove CJS exports in v2.5.",
+        author: "esm-purist",
+        state: "open",
+        created_at: "15 days ago",
+        labels: ["discussion", "breaking-change"],
+        signal: "contentious",
+        comments: [
+          { author: "enterprise-dan", body: "Please don't. This will break CI for thousands of teams.", is_maintainer: false },
+          { author: "sarah-maintainer", body: "I disagree with doing this in a minor version. This is a breaking change.", is_maintainer: true },
+          { author: "marcus-k", body: "Huge pushback from our team. We won't be able to upgrade.", is_maintainer: false },
+          { author: "alex-maintainer", body: "Closing as won't fix for v2. Out of scope.", is_maintainer: true }
+        ]
+      },
+      {
+        id: 107,
+        title: "Production build fails with TypeScript error in types",
+        body: "Since upgrading to core 2.4.0, tsc fails with Cannot find name 'RuleEngineContext'. Blocking CI.",
+        author: "devin-ross",
+        state: "open",
+        created_at: "8 days ago",
+        labels: ["bug", "typescript"],
+        signal: "urgent",
+        comments: []
+      },
+      {
+        id: 108,
+        title: "it crashes with error",
+        body="I ran the command and it gave error and broke. Please fix.",
+        author: "dan-b-22",
+        state: "open",
+        created_at: "4 days ago",
+        labels: ["bug"],
+        signal: "missing_info",
+        comments: []
+      },
+      {
+        id: 109,
+        title: "Add syntax highlighting for Rust snippets in HTML reports",
+        body: "Feature request to bundle highlight.js Rust language pack for report previews.",
+        author: "nikolay-rust",
+        state: "open",
+        created_at: "4 days ago",
+        labels: ["enhancement"],
+        signal: "clean",
+        comments: [
+          { author: "sarah-maintainer", body: "PRs welcome!", is_maintainer: true }
+        ]
+      }
+    ];
+
+    let activeFilter = 'open';
+    let nextId = 110;
+
+    // Generators for dynamic injection on button clicks
+    const generators = {
+      duplicate: () => ({
+        id: nextId++,
+        title: "OAuth bearer token not refreshed automatically on expiry",
+        body: "When running in CI pipelines, requests fail after initial token lifetime expires. The client needs to intercept 401 and invoke the refresh token grant.",
+        author: "elena-v",
+        state: "open",
+        created_at: "Just now",
+        labels: ["auth"],
+        signal: "duplicate",
+        comments: []
+      }),
+      regression: () => ({
+        id: nextId++,
+        title: "`--port` argument is ignored when starting daemon via `repoguardian serve`",
+        body: "Passing `--port 8080` still binds to default port 3000 in the latest release.",
+        author: "brian-w",
+        state: "open",
+        created_at: "Just now",
+        labels: ["bug", "cli"],
+        signal: "regression",
+        comments: []
+      }),
+      security: () => ({
+        id: nextId++,
+        title: "SQL injection risk in custom database query evaluator",
+        body: "In `src/rules/dbCheck.ts`, user queries are concatenated without parameterized variable bindings.",
+        author: "alif-security",
+        state: "open",
+        created_at: "Just now",
+        labels: ["security"],
+        signal: "security",
+        comments: []
+      }),
+      missing_info: () => ({
+        id: nextId++,
+        title: "plugin broken on scan",
+        body: "Crash exception thrown when running analysis. Please fix this bug.",
+        author: "user-rush-99",
+        state: "open",
+        created_at: "Just now",
+        labels: ["bug"],
+        signal: "missing_info",
+        comments: []
+      }),
+      clean: () => ({
+        id: nextId++,
+        title: "Support `.env.local` file overrides for local tests",
+        body: "### Feature Request\nAllow `repoguardian test` to automatically pick up `.env.local` if present.",
+        author: "liam-connor",
+        state: "open",
+        created_at: "Just now",
+        labels: ["enhancement"],
+        signal: "clean",
+        comments: []
+      })
+    };
+
+    function injectEvent(type) {
+      const newIssue = generators[type]();
+      issues.unshift(newIssue);
+      renderIssues();
+    }
+
+    function filterState(state) {
+      activeFilter = state;
+      document.getElementById('tab-open').className = state === 'open' ? 'text-white flex items-center gap-1.5 font-semibold' : 'text-[#8b949e] hover:text-white flex items-center gap-1.5';
+      document.getElementById('tab-closed').className = state === 'closed' ? 'text-white flex items-center gap-1.5 font-semibold' : 'text-[#8b949e] hover:text-white flex items-center gap-1.5';
+      renderIssues();
+    }
+
+    function renderIssues() {
+      const container = document.getElementById('issues-container');
+      const signalSelect = document.getElementById('signal-filter').value;
+
+      const openCount = issues.filter(i => i.state === 'open').length;
+      const closedCount = issues.filter(i => i.state === 'closed').length;
+      document.getElementById('count-open').innerText = `${openCount} Open`;
+      document.getElementById('count-closed').innerText = `${closedCount} Closed`;
+
+      let filtered = issues.filter(i => i.state === activeFilter);
+      if (signalSelect !== 'all') {
+        filtered = filtered.filter(i => i.signal === signalSelect);
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="p-8 text-center text-[#8b949e] text-sm">No issues matching the current filter.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(issue => `
+        <div class="p-3.5 hover:bg-[#1c2128] transition-colors flex items-start justify-between gap-4 cursor-pointer" onclick="openModal(${issue.id})">
+          <div class="flex items-start gap-3">
+            <span class="mt-0.5">${issue.state === 'open' ? '<svg class="w-4 h-4 text-emerald-400" viewBox="0 0 16 16" fill="currentColor"><path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0ZM1.5 8a6.5 6.5 0 1 1 13 0 6.5 6.5 0 0 1-13 0Z"></path></svg>' : '<svg class="w-4 h-4 text-[#8957e5]" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"></path></svg>'}</span>
+            <div>
+              <div class="flex items-center flex-wrap gap-2">
+                <span class="font-semibold text-white text-sm hover:text-indigo-400">${issue.title}</span>
+                ${issue.labels.map(l => `<span class="bg-[#21262d] text-[#8b949e] text-[10px] font-mono px-2 py-0.5 rounded-full border border-[#30363d]">${l}</span>`).join('')}
+                ${getSignalBadge(issue.signal)}
+              </div>
+              <div class="text-xs text-[#8b949e] mt-1">
+                #${issue.id} opened ${issue.created_at} by ${issue.author}
+              </div>
+            </div>
+          </div>
+          ${issue.comments.length > 0 ? `
+            <div class="flex items-center gap-1 text-xs text-[#8b949e] font-mono">
+              <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 16 16"><path d="M1 2.75C1 1.784 1.784 1 2.75 1h10.5c.966 0 1.75.784 1.75 1.75v7.5A1.75 1.75 0 0 1 13.25 12H9.06l-2.573 2.573A1.458 1.458 0 0 1 4 13.543V12H2.75A1.75 1.75 0 0 1 1 10.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h2a.75.75 0 0 1 .75.75v2.19l2.72-2.72a.749.749 0 0 1 .53-.22h4.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path></svg>
+              <span>${issue.comments.length}</span>
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    function getSignalBadge(signal) {
+      const map = {
+        duplicate: '<span class="bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[10px] px-1.5 py-0.5 rounded">Likely Duplicate (0.81)</span>',
+        regression: '<span class="bg-purple-500/10 text-purple-300 border border-purple-500/30 text-[10px] px-1.5 py-0.5 rounded">Possible Regression</span>',
+        security: '<span class="bg-rose-500/10 text-rose-300 border border-rose-500/30 text-[10px] px-1.5 py-0.5 rounded">Security Sensitive</span>',
+        contentious: '<span class="bg-orange-500/10 text-orange-300 border border-orange-500/30 text-[10px] px-1.5 py-0.5 rounded">Contentious (Wontfix)</span>',
+        urgent: '<span class="bg-red-500/10 text-red-300 border border-red-500/30 text-[10px] px-1.5 py-0.5 rounded">Unresponded</span>',
+        missing_info: '<span class="bg-yellow-500/10 text-yellow-300 border border-yellow-500/30 text-[10px] px-1.5 py-0.5 rounded">Missing Repro Info</span>',
+        clean: ''
+      };
+      return map[signal] || '';
+    }
+
+    function openModal(id) {
+      const issue = issues.find(i => i.id === id);
+      if (!issue) return;
+
+      document.getElementById('modal-title').innerText = issue.title;
+      document.getElementById('modal-number').innerText = `#${issue.id}`;
+      document.getElementById('modal-body').innerText = issue.body;
+      document.getElementById('modal-status-badge').innerHTML = issue.state === 'open' 
+        ? '<span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs px-2 py-0.5 rounded-full font-medium">Open</span>'
+        : '<span class="bg-purple-500/20 text-purple-300 border border-purple-500/30 text-xs px-2 py-0.5 rounded-full font-medium">Closed</span>';
+
+      const commentsContainer = document.getElementById('modal-comments');
+      if (issue.comments.length === 0) {
+        commentsContainer.innerHTML = `<div class="text-[#8b949e] text-xs italic">No comments on this issue yet.</div>`;
+      } else {
+        commentsContainer.innerHTML = issue.comments.map(c => `
+          <div class="bg-[#0d1117] border border-[#30363d] rounded-lg p-3">
+            <div class="flex items-center justify-between text-xs text-[#8b949e] mb-1.5">
+              <span class="font-semibold ${c.is_maintainer ? 'text-indigo-400' : 'text-slate-300'}">${c.author} ${c.is_maintainer ? '<span class="border border-indigo-500/30 text-[10px] px-1 rounded ml-1 text-indigo-300">Maintainer</span>' : ''}</span>
+            </div>
+            <p class="text-xs text-[#c9d1d9]">${c.body}</p>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('modal').classList.remove('hidden');
+      document.getElementById('modal').classList.add('flex');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden');
+      document.getElementById('modal').classList.remove('flex');
+    }
+
+    // Initial render
+    renderIssues();
+  </script>
+</body>
+</html>
