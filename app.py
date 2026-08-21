@@ -172,8 +172,9 @@ class SeedRequest(BaseModel):
     repo: str
     token: str
     category: str  # 'all', 'duplicates', 'regressions', 'security', 'contentious', 'controls'
+    dry_run: bool = False
 
-def execute_seeding(owner: str, repo: str, token: str, category: str) -> List[str]:
+def execute_seeding(owner: str, repo: str, token: str, category: str, dry_run: bool = False) -> List[str]:
     headers = {
         "Authorization": f"token {token}",
         "Accept": "application/vnd.github.v3+json",
@@ -191,6 +192,33 @@ def execute_seeding(owner: str, repo: str, token: str, category: str) -> List[st
         items_to_seed.extend(DATA_STORE[category])
     else:
         raise HTTPException(status_code=400, detail="Invalid category specified.")
+
+    if dry_run:
+        logs.append(f"[DRY-RUN] Simulating issue creation for target repository {owner}/{repo} (Category: {category})")
+        logs.append(f"[DRY-RUN] Total templates queued: {len(items_to_seed)}")
+        
+        simulated_id_map: Dict[str, int] = {}
+        sim_issue_counter = 101
+
+        # Pass 1 Simulation
+        for item in items_to_seed:
+            simulated_id_map[item["id_key"]] = sim_issue_counter
+            logs.append(f"[DRY-RUN] Would create Issue #{sim_issue_counter}: '{item['title']}' (Labels: {item['labels']})")
+            sim_issue_counter += 1
+
+        # Pass 2 Simulation
+        for item in items_to_seed:
+            num = simulated_id_map[item["id_key"]]
+            for comment in item["comments"]:
+                formatted_comment = comment
+                for k, mapped_num in simulated_id_map.items():
+                    formatted_comment = formatted_comment.replace(f"{{{k}}}", str(mapped_num))
+                logs.append(f"  └ [DRY-RUN] Would add comment to #{num}: '{formatted_comment[:60]}...'")
+            if item["should_close"]:
+                logs.append(f"  └ [DRY-RUN] Would close Issue #{num}")
+        
+        logs.append("[DRY-RUN] Simulation finished. No GitHub API calls were dispatched.")
+        return logs
 
     # Pre-flight repo test
     test_res = requests.get(f"{BASE_URL}/repos/{owner}/{repo}", headers=headers)
@@ -254,11 +282,32 @@ def execute_seeding(owner: str, repo: str, token: str, category: str) -> List[st
 # API & FRONTEND
 # -----------------------------------------------------------------------------
 
+@app.get("/api/health")
+def health_check():
+    total_issues = sum(len(items) for items in DATA_STORE.values())
+    return {
+        "status": "healthy",
+        "service": "RepoGuardian Test Suite Controller",
+        "version": "1.1.0",
+        "categories": list(DATA_STORE.keys()),
+        "total_seed_templates": total_issues
+    }
+
+@app.get("/api/categories")
+def get_categories():
+    return {
+        cat: {
+            "count": len(items),
+            "sample_titles": [item["title"] for item in items[:2]]
+        }
+        for cat, items in DATA_STORE.items()
+    }
+
 @app.post("/api/seed")
 def seed_endpoint(req: SeedRequest):
     try:
-        logs = execute_seeding(req.owner, req.repo, req.token, req.category)
-        return {"status": "success", "logs": logs}
+        logs = execute_seeding(req.owner, req.repo, req.token, req.category, dry_run=req.dry_run)
+        return {"status": "success", "dry_run": req.dry_run, "logs": logs}
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -288,7 +337,7 @@ def index_page():
     <!-- Credentials Card -->
     <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 mb-6 shadow-xl">
       <h2 class="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-4">Target Repository Configuration</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <div>
           <label class="block text-xs font-medium text-slate-400 mb-1">GitHub Owner / Org</label>
           <input id="owner" type="text" placeholder="e.g. your-username" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
@@ -301,6 +350,14 @@ def index_page():
           <label class="block text-xs font-medium text-slate-400 mb-1">Personal Access Token (repo scope)</label>
           <input id="token" type="password" placeholder="ghp_xxxxxxxxxxxx" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
         </div>
+      </div>
+      
+      <div class="flex items-center justify-between pt-3 border-t border-slate-800/80">
+        <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-300 hover:text-white select-none">
+          <input id="dryRun" type="checkbox" class="rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-0 focus:ring-offset-0">
+          <span>Dry Run Mode (Simulate without creating actual GitHub issues)</span>
+        </label>
+        <span class="text-[11px] text-slate-500 font-mono" id="healthStats">API Status: Ready</span>
       </div>
     </div>
 
@@ -343,39 +400,51 @@ def index_page():
 
   <script>
     // Autofill token/repo from URL or LocalStorage if present
-    window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('owner').value = localStorage.getItem('rg_owner') || '';
       document.getElementById('repo').value = localStorage.getItem('rg_repo') || '';
       document.getElementById('token').value = localStorage.getItem('rg_token') || '';
+
+      try {
+        const res = await fetch('/api/health');
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('healthStats').innerText = `v${data.version} · ${data.total_seed_templates} test templates ready`;
+        }
+      } catch (e) {
+        // ignore offline preview
+      }
     });
 
     async function triggerSeed(category) {
       const owner = document.getElementById('owner').value.trim();
       const repo = document.getElementById('repo').value.trim();
       const token = document.getElementById('token').value.trim();
+      const dryRun = document.getElementById('dryRun').checked;
       const consoleBox = document.getElementById('logConsole');
       const statusIndicator = document.getElementById('statusIndicator');
 
-      if (!owner || !repo || !token) {
-        alert('Please fill in GitHub Owner, Repo Name, and Token.');
+      if (!owner || !repo || (!dryRun && !token)) {
+        alert('Please fill in GitHub Owner and Repo Name (and Token if not in Dry Run mode).');
         return;
       }
 
       // Persist in local storage
       localStorage.setItem('rg_owner', owner);
       localStorage.setItem('rg_repo', repo);
-      localStorage.setItem('rg_token', token);
+      if (token) localStorage.setItem('rg_token', token);
 
       // UI state updates
-      statusIndicator.innerText = `Seeding [${category}]...`;
+      const actionLabel = dryRun ? `[DRY-RUN] Simulating` : `Seeding`;
+      statusIndicator.innerText = `${actionLabel} [${category}]...`;
       statusIndicator.className = "text-xs text-amber-400 font-mono animate-pulse";
-      consoleBox.innerHTML += `<div class="text-amber-300 mt-2">=== Starting seed for category: ${category} ===</div>`;
+      consoleBox.innerHTML += `<div class="text-amber-300 mt-2">=== ${actionLabel} category: ${category} ===</div>`;
 
       try {
         const res = await fetch('/api/seed', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ owner, repo, token, category })
+          body: JSON.stringify({ owner, repo, token: token || 'mock_token', category, dry_run: dryRun })
         });
 
         const data = await res.json();
@@ -385,7 +454,7 @@ def index_page():
           consoleBox.innerHTML += `<div>${line}</div>`;
         });
         consoleBox.innerHTML += `<div class="text-emerald-400 font-bold mt-1">✔ Finished successfully.</div>`;
-        statusIndicator.innerText = "Completed";
+        statusIndicator.innerText = dryRun ? "Simulation Done" : "Completed";
         statusIndicator.className = "text-xs text-emerald-400 font-mono";
       } catch (err) {
         consoleBox.innerHTML += `<div class="text-rose-400 font-bold mt-1">✖ Error: ${err.message}</div>`;
